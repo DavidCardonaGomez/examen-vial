@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Examen Teórico Vial Cuba</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+
+    <header class="top-bar">
+      <h1 id="app-nombre">Examen Vial Cuba</h1>
+      <div class="top-controls">
+        <button class="btn-sound" id="btn-sound" onclick="toggleSound()">🔊 ON</button>
+        <button class="btn-theme" id="btn-theme" onclick="toggleTheme()">🌙 Oscuro</button>
+      </div>
+    </header>
+
+    <!-- PANTALLA 1: LOGIN -->
+    <section id="pantalla-1" class="pantalla activa">
+      <div class="login-card">
+        <h2>👋 Bienvenido</h2>
+        <p class="intro-text">
+          Esta app te ayuda a prepararte para el examen teórico del
+          <strong>Código de Seguridad Vial (Ley 109)</strong> de Cuba.
+          Cuenta con <strong>230 preguntas</strong> repartidas en 5 temarios.
+        </p>
+
+        <div class="form-group">
+          <label for="input-nombre">Nombre</label>
+          <input type="text" id="input-nombre" placeholder="Escribe tu nombre" autocomplete="given-name">
+        </div>
+
+        <div class="form-group">
+          <label for="input-apellido">Apellido</label>
+          <input type="text" id="input-apellido" placeholder="Escribe tu apellido" autocomplete="family-name">
+        </div>
+
+        <div class="form-group">
+          <label for="select-licencia">Licencia que vas a estudiar</label>
+          <select id="select-licencia">
+            <option value="">-- Selecciona --</option>
+            <option value="A">Categoría A — Motocicletas</option>
+            <option value="A-1">Subcategoría A-1 — Ciclomotores</option>
+            <option value="B">Categoría B — Automóviles ligeros</option>
+            <option value="C">Categoría C — Camiones</option>
+            <option value="C-1">Subcategoría C-1 — Camiones hasta 7,500 kg</option>
+            <option value="D">Categoría D — Ómnibus</option>
+            <option value="D-1">Subcategoría D-1 — Microbuses</option>
+            <option value="E">Categoría E — Conjunto de vehículos</option>
+            <option value="F">Categoría F — Agrícolas y especializados</option>
+            <option value="FE">Categoría FE — Agrícolas con remolque</option>
+          </select>
+        </div>
+
+        <p id="error-login" class="error-msg"></p>
+
+        <button type="button" class="btn-submit btn-comenzar" onclick="continuarLogin()">
+          ✅ Continuar
+        </button>
+
+        <button type="button" class="btn-ayuda" onclick="navegar(9)">
+          ❓ ¿Cómo funciona?
+        </button>
+
+        <button type="button" class="btn-ayuda" onclick="irAPdf(1)">
+          📄 Ver el Código de Seguridad Vial
+        </button>
+      </div>
+    </section>
+
+    <!-- PANTALLA 2: PRINCIPAL -->
+    <section id="pantalla-2" class="pantalla">
+      <div class="principal-card">
+
+        <div class="saludo" id="saludo-usuario">
+          Hola, <strong>Usuario</strong> 👋
+        </div>
+
+        <div class="intro-stats">
+          <div class="intro-stat-item">
+            <span class="stat-emoji">🏆</span>
+            <span class="stat-label">Récord</span>
+            <span class="stat-value" id="stat-record">0%</span>
+          </div>
+          <div class="intro-stat-item">
+            <span class="stat-emoji">📊</span>
+            <span class="stat-label">Dominio</span>
+            <span class="stat-value" id="stat-dominio">0%</span>
+          </div>
+          <div class="intro-stat-item">
+            <span class="stat-emoji">📝</span>
+            <span class="stat-label">Intentos</span>
+            <span class="stat-value" id="stat-intentos">0</span>
+          </div>
+        </div>
+
+        <div class="record-tiempo">
+          <span>⏱️ Mejor tiempo:</span>
+          <strong id="stat-tiempo">--:--</strong>
+        </div>
+
+        <!-- Sistema de niveles y XP -->
+        <div class="nivel-container">
+          <div class="nivel-header">
+            <span class="nivel-badge" id="nivel-badge">🌱</span>
+            <div class="nivel-info">
+              <span class="nivel-nombre" id="nivel-nombre">Novato</span>
+              <span class="nivel-xp" id="nivel-xp">0 XP</span>
+            </div>
+          </div>
+          <div class="xp-bar-bg">
+            <div class="xp-bar-fill" id="xp-barra"></div>
+          </div>
+          <span class="xp-siguiente" id="xp-siguiente">100 XP para Aprendiz</span>
+        </div>
+
+        <!-- Medallas -->
+        <h3 class="seccion-titulo">🏅 Medallas</h3>
+        <div class="medallas-container" id="medallas-container">
+          <!-- Se generan por JS -->
+        </div>
+
+        <h3 class="seccion-titulo">Selecciona un modo de estudio</h3>
+        <div class="modos-grid">
+          <button class="btn-modo" onclick="navegar(3)">
+            <span class="modo-emoji">📚</span>
+            <span class="modo-titulo">Modo Práctica</span>
+            <span class="modo-desc">Sin tiempo. Corrección al instante.</span>
+          </button>
+          <button class="btn-modo" onclick="navegar(4)">
+            <span class="modo-emoji">⏱️</span>
+            <span class="modo-titulo">Modo Evaluación</span>
+            <span class="modo-desc">Cronómetro. Guarda resultados.</span>
+          </button>
+        </div>
+
+        <h3 class="seccion-titulo">📉 Preguntas que más fallas</h3>
+        <div class="fallos-container" id="fallos-container">
+          <p class="fallos-vacio">Aún no has cometido errores. ¡Bien hecho! 🎉</p>
+        </div>
+
+        <button type="button" class="btn-ayuda" onclick="navegar(9)">
+          ❓ ¿Cómo funciona?
+        </button>
+
+        <button type="button" class="btn-ayuda" onclick="irAPdf(2)">
+          📄 Ver el Código de Seguridad Vial
+        </button>
+
+        <button type="button" class="btn-submit btn-reiniciar" onclick="cerrarSesion()">
+          🚪 Cerrar sesión
+        </button>
+
+      </div>
+    </section>
+
+    <!-- PANTALLA 3: SELECCIÓN MODO PRÁCTICA -->
+    <section id="pantalla-3" class="pantalla">
+      <div class="seleccion-card">
+        <span class="etiqueta-modo practica">📚 Modo Práctica</span>
+        <h2>Selecciona los temarios</h2>
+        <p class="intro-text">Puedes elegir uno o varios. Se tomarán 20 preguntas al azar de los temarios seleccionados.</p>
+
+        <div class="temarios-list">
+          <label class="temario-check">
+            <input type="checkbox" name="temario-practica" value="vialidad">
+            <span>🛣️ Vialidad y Señalización</span>
+          </label>
+          <label class="temario-check">
+            <input type="checkbox" name="temario-practica" value="circulacion">
+            <span>🚗 Circulación y Maniobras</span>
+          </label>
+          <label class="temario-check">
+            <input type="checkbox" name="temario-practica" value="prohibiciones">
+            <span>⛔ Prohibiciones y Velocidad</span>
+          </label>
+          <label class="temario-check">
+            <input type="checkbox" name="temario-practica" value="vehiculos">
+            <span>🔧 Vehículos y Documentación</span>
+          </label>
+          <label class="temario-check">
+            <input type="checkbox" name="temario-practica" value="licencias">
+            <span>📄 Licencias y Sanciones</span>
+          </label>
+        </div>
+
+        <div class="seleccion-botones">
+          <button type="button" class="btn-submit btn-reiniciar" onclick="navegar(2)">
+            ← Regresar
+          </button>
+          <button type="button" class="btn-submit" onclick="continuarSeleccion('practica')">
+            Continuar →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANTALLA 4: SELECCIÓN MODO EVALUACIÓN -->
+    <section id="pantalla-4" class="pantalla">
+      <div class="seleccion-card">
+        <span class="etiqueta-modo evaluacion">⏱️ Modo Evaluación</span>
+        <h2>Selecciona los temarios</h2>
+        <p class="intro-text">Puedes elegir uno o varios. Se tomarán 20 preguntas al azar. El examen se cronometrará.</p>
+
+        <div class="temarios-list">
+          <label class="temario-check">
+            <input type="checkbox" name="temario-evaluacion" value="vialidad">
+            <span>🛣️ Vialidad y Señalización</span>
+          </label>
+          <label class="temario-check">
+            <input type="checkbox" name="temario-evaluacion" value="circulacion">
+            <span>🚗 Circulación y Maniobras</span>
+          </label>
+          <label class="temario-check">
+            <input type="checkbox" name="temario-evaluacion" value="prohibiciones">
+            <span>⛔ Prohibiciones y Velocidad</span>
+          </label>
+          <label class="temario-check">
+            <input type="checkbox" name="temario-evaluacion" value="vehiculos">
+            <span>🔧 Vehículos y Documentación</span>
+          </label>
+          <label class="temario-check">
+            <input type="checkbox" name="temario-evaluacion" value="licencias">
+            <span>📄 Licencias y Sanciones</span>
+          </label>
+        </div>
+
+        <div class="seleccion-botones">
+          <button type="button" class="btn-submit btn-reiniciar" onclick="navegar(2)">
+            ← Regresar
+          </button>
+          <button type="button" class="btn-submit" onclick="continuarSeleccion('evaluacion')">
+            Continuar →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANTALLA 5: EXAMEN PRÁCTICA -->
+    <section id="pantalla-5" class="pantalla">
+      <div class="etiqueta-modo practica sticky-etiqueta">📚 Modo Práctica</div>
+      <div class="examen-info">
+        <span id="practica-progreso">Pregunta 0 de 20</span>
+      </div>
+
+      <div id="practica-preguntas"></div>
+
+      <button type="button" class="btn-submit btn-reiniciar" onclick="salirExamen(3)">
+        ← Regresar
+      </button>
+      <button type="button" class="btn-submit" id="btn-enviar-practica" onclick="enviarExamen('practica')">
+        Enviar Examen
+      </button>
+    </section>
+
+    <!-- PANTALLA 6: EXAMEN EVALUACIÓN -->
+    <section id="pantalla-6" class="pantalla">
+      <div class="header-evaluacion sticky-header">
+        <div class="etiqueta-modo evaluacion">⏱️ Modo Evaluación</div>
+        <div class="cronometro" id="cronometro-display">⏱️ 00:00</div>
+      </div>
+      <div class="examen-info">
+        <span id="evaluacion-progreso">Pregunta 0 de 20</span>
+      </div>
+
+      <div id="evaluacion-preguntas"></div>
+
+      <button type="button" class="btn-submit btn-reiniciar" onclick="salirExamen(4)">
+        ← Regresar
+      </button>
+      <button type="button" class="btn-submit" id="btn-enviar-evaluacion" onclick="enviarExamen('evaluacion')">
+        Enviar Examen
+      </button>
+    </section>
+
+    <!-- PANTALLA 7: RESULTADOS -->
+    <section id="pantalla-7" class="pantalla">
+      <div class="resultado-card">
+        <div id="resultado-emoji" class="resultado-emoji">🎉</div>
+        <h2 id="resultado-titulo">¡Aprobaste!</h2>
+
+        <div class="resultado-stats">
+          <div class="resultado-stat">
+            <span class="resultado-valor" id="resultado-aciertos">0</span>
+            <span class="resultado-label">Aciertos</span>
+          </div>
+          <div class="resultado-stat">
+            <span class="resultado-valor" id="resultado-porcentaje">0%</span>
+            <span class="resultado-label">Puntuación</span>
+          </div>
+          <div class="resultado-stat">
+            <span class="resultado-valor" id="resultado-tiempo">--:--</span>
+            <span class="resultado-label">Tiempo</span>
+          </div>
+        </div>
+
+        <div class="resultado-temarios">
+          <strong>📚 Temarios evaluados:</strong>
+          <div id="resultado-lista-temarios"></div>
+        </div>
+
+        <h3 class="seccion-titulo">📋 Detalle de respuestas</h3>
+        <div class="resultado-detalle" id="resultado-detalle"></div>
+
+        <button type="button" class="btn-ayuda" onclick="irAPdf(7)">
+          📄 Ver el Código de Seguridad Vial
+        </button>
+
+        <button type="button" class="btn-submit" onclick="navegar(2)">
+          Continuar →
+        </button>
+      </div>
+    </section>
+
+    <!-- PANTALLA 8: PDF -->
+    <section id="pantalla-8" class="pantalla">
+      <div class="pdf-card">
+        <div class="pdf-header">
+          <h2>📄 Código de Seguridad Vial</h2>
+          <div class="pdf-busqueda">
+            <input type="text" id="pdf-buscar-articulo" placeholder="Buscar artículo... (ej: 5)" inputmode="numeric">
+            <button type="button" class="btn-pdf-buscar" onclick="buscarArticuloPdf()">🔍</button>
+          </div>
+        </div>
+
+        <div class="pdf-toolbar">
+          <button type="button" class="btn-pdf" onclick="pdfAnterior()">◀ Anterior</button>
+          <span class="pdf-pagina" id="pdf-pagina-info">Página 0 de 0</span>
+          <button type="button" class="btn-pdf" onclick="pdfSiguiente()">Siguiente ▶</button>
+        </div>
+
+        <div class="pdf-toolbar pdf-toolbar-zoom">
+          <button type="button" class="btn-pdf" onclick="pdfZoom(-1)">🔍−</button>
+          <span class="pdf-zoom-info" id="pdf-zoom-info">100%</span>
+          <button type="button" class="btn-pdf" onclick="pdfZoom(1)">🔍+</button>
+          <button type="button" class="btn-pdf" onclick="pdfAjustarAncho()">↔ Ajustar</button>
+        </div>
+
+        <div class="pdf-viewer" id="pdf-viewer">
+          <div id="pdf-loading" class="pdf-loading">⏳ Cargando PDF...</div>
+          <canvas id="pdf-canvas"></canvas>
+        </div>
+
+        <button type="button" class="btn-submit btn-reiniciar" onclick="navegar(origenPdf)">
+          ← Regresar
+        </button>
+      </div>
+    </section>
+
+    <!-- PANTALLA 9: CÓMO FUNCIONA -->
+    <section id="pantalla-9" class="pantalla">
+      <div class="ayuda-card">
+        <h2>📖 ¿Cómo funciona el examen?</h2>
+
+        <div class="modal-body">
+          <h3>🎯 Objetivo</h3>
+          <p>
+            Esta app te ayuda a prepararte para el examen teórico del
+            <strong>Código de Seguridad Vial (Ley 109)</strong> de Cuba.
+            Cuenta con <strong>230 preguntas</strong> repartidas en <strong>5 temarios</strong>.
+          </p>
+
+          <h3>🎮 Modos de examen</h3>
+          <ul>
+            <li>
+              <strong>📚 Modo Práctica:</strong> sin tiempo, las preguntas
+              se corrigen al instante. Ideal para estudiar y repasar.
+              <em>No guarda resultados.</em>
+            </li>
+            <li>
+              <strong>⏱️ Modo Evaluación:</strong> 20 preguntas aleatorias con
+              cronómetro. Al final recibes una nota del 0 al 100%.
+              Se aprueba con <strong>70% o más</strong>. <em>Guarda resultados
+              y estadísticas.</em>
+            </li>
+          </ul>
+
+          <h3>📚 Temarios disponibles</h3>
+          <ul>
+            <li><strong>🛣️ Vialidad y Señalización:</strong> vías, señales, semáforos.</li>
+            <li><strong>🚗 Circulación y Maniobras:</strong> prioridad, giros, adelantamiento.</li>
+            <li><strong>⛔ Prohibiciones y Velocidad:</strong> límites, alcohol, prohibiciones.</li>
+            <li><strong>🔧 Vehículos y Documentación:</strong> estado técnico, carga, papeles.</li>
+            <li><strong>📄 Licencias y Sanciones:</strong> licencias, multas, suspensiones.</li>
+          </ul>
+          <p>
+            Puedes seleccionar <strong>uno o varios temarios</strong> para
+            enfocarte en lo que más te cueste.
+          </p>
+
+          <h3>📊 Estadísticas</h3>
+          <ul>
+            <li><strong>🏆 Récord:</strong> tu mejor nota histórica.</li>
+            <li><strong>📊 Dominio:</strong> promedio de todos tus intentos.</li>
+            <li><strong>📝 Intentos:</strong> cuántas veces has hecho el examen.</li>
+            <li><strong>⏱️ Mejor tiempo:</strong> el examen aprobado más rápido.</li>
+          </ul>
+
+          <h3>🎮 Sistema de niveles y XP</h3>
+          <p>
+            Cada examen te otorga <strong>puntos de experiencia (XP)</strong>
+            que te permiten subir de nivel:
+          </p>
+          <ul>
+            <li>🌱 <strong>Novato</strong> — 0 XP</li>
+            <li>📗 <strong>Aprendiz</strong> — 100 XP</li>
+            <li>🚗 <strong>Conductor</strong> — 250 XP</li>
+            <li>🏎️ <strong>Experto</strong> — 500 XP</li>
+            <li>🏆 <strong>Maestro</strong> — 1000 XP</li>
+          </ul>
+          <p>
+            <strong>Ganas XP</strong> por: completar examen (+10), cada acierto (+2),
+            aprobar (+20) y obtener 100% (+50).
+          </p>
+
+          <h3>🏅 Medallas y logros</h3>
+          <p>Hay <strong>15 medallas</strong> desbloqueables:</p>
+          <ul>
+            <li><strong>🎓 Primer Paso:</strong> completa tu primer examen.</li>
+            <li><strong>🏆 Aprobado:</strong> aprueba por primera vez.</li>
+            <li><strong>💯 Perfecto:</strong> obtén 100% en un examen.</li>
+            <li><strong>🔥 En Racha:</strong> 3 aprobados seguidos.</li>
+            <li><strong>⚡ Imparable:</strong> 5 aprobados seguidos.</li>
+            <li><strong>🚀 Legendario:</strong> 10 aprobados seguidos.</li>
+            <li><strong>📚 Estudiante:</strong> completa 10 exámenes.</li>
+            <li><strong>🎯 Dedicado:</strong> completa 25 exámenes.</li>
+            <li><strong>🧠 Sabio:</strong> completa 50 exámenes.</li>
+            <li><strong>🛣️ Vialidad:</strong> 80%+ en ese temario.</li>
+            <li><strong>🚗 Circulación:</strong> 80%+ en ese temario.</li>
+            <li><strong>⛔ Prohibiciones:</strong> 80%+ en ese temario.</li>
+            <li><strong>🔧 Vehículos:</strong> 80%+ en ese temario.</li>
+            <li><strong>📄 Licencias:</strong> 80%+ en ese temario.</li>
+            <li><strong>👑 Maestro Total:</strong> 100% en los 5 temarios.</li>
+          </ul>
+
+          <h3>📉 Preguntas que más fallas</h3>
+          <p>
+            La app <strong>recuerda qué preguntas fallas más</strong> y las
+            muestra en la pantalla principal para que las repases. Cada vez
+            que fallas una, se acumula su contador.
+          </p>
+
+          <h3>📄 Código de Seguridad Vial (PDF)</h3>
+          <p>
+            Puedes consultar el <strong>PDF completo de la Ley 109</strong> desde
+            cualquier pantalla. Además:
+          </p>
+          <ul>
+            <li>🔍 <strong>Búsqueda por artículo:</strong> escribe el número (ej: 5) y salta directo a esa página.</li>
+            <li>◀ ▶ <strong>Navegación</strong> entre páginas.</li>
+            <li>🔍+ 🔍− <strong>Zoom</strong> para leer más cómodo.</li>
+            <li>📄 <strong>Enlaces directos:</strong> desde los resultados del examen, cada pregunta incorrecta tiene un enlace al artículo correspondiente.</li>
+          </ul>
+
+          <h3>💡 Consejos</h3>
+          <ul>
+            <li>Empieza con <strong>Modo Práctica</strong> para estudiar sin presión.</li>
+            <li>Cuando te sientas listo, prueba el <strong>Modo Evaluación</strong>.</li>
+            <li>Usa el selector de <strong>temarios</strong> para enfocarte en lo que más te cuesta.</li>
+            <li>Revisa las <strong>preguntas que más fallas</strong> para repasar.</li>
+            <li>Aprovecha el <strong>PDF integrado</strong> para estudiar el articulado.</li>
+            <li>El botón <strong>🌙 / ☀️</strong> cambia entre tema claro y oscuro.</li>
+            <li>El botón <strong>🔊 / 🔇</strong> activa o silencia los sonidos.</li>
+            <li>Mantén tu <strong>racha</strong> aprobando exámenes seguidos para desbloquear medallas especiales.</li>
+          </ul>
+        </div>
+
+        <button type="button" class="btn-submit" onclick="navegar(usuario ? 2 : 1)">
+          ← Regresar
+        </button>
+      </div>
+    </section>
+
+  </div><!-- Cierra .container -->
+
+  <!-- Scripts -->
+  <script src="libs/pdfjs/pdf.min.js"></script>
+  <script src="preguntas.js"></script>
+  <script src="app.js"></script>
+
+  <!-- Notificación de logro desbloqueado -->
+  <div id="notif-logro" class="notif-logro">
+    <span class="notif-emoji" id="notif-emoji">🏅</span>
+    <div class="notif-texto">
+      <strong id="notif-titulo">¡Logro desbloqueado!</strong>
+      <span id="notif-desc">Descripción</span>
+    </div>
+  </div>
+
+</body>
+</html>
