@@ -1,7 +1,7 @@
 // ==================================================
 // SERVICE WORKER - Examen Vial Cuba
 // ==================================================
-const CACHE_NAME = 'examen-vial-v3';
+const CACHE_NAME = 'examen-vial-v8';
 
 // Archivos que se guardan en caché al instalar
 const ASSETS = [
